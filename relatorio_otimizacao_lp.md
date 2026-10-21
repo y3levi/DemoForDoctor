@@ -10,7 +10,7 @@
 | Critério | Situação Atual (No Ar - Elementor) | Problema Identificado | Solução Aplicada na Nova LP |
 | :--- | :--- | :--- | :--- |
 | **Velocidade & Código** | 60 scripts JS + 37 arquivos CSS externos | Sobrecarga extrema, bloqueio de renderização (*render-blocking*), alto consumo de dados no 4G/mobile. | **Arquitetura Modular Enxuta**: `index.html` + `css/style.css` + `js/main.js` (~178 KB totais incluindo fontes e ícones). |
-| **Tipografia & Identidade** | Carregamento externo lento do Google Fonts com múltiplos pesos redundantes. | *Flash of Unstyled Text (FOUT)* e requisições DNS extras. | **Fontes Oficiais Self-Hosted (WOFF2)**: `Dosis` (títulos e marca) + `Montserrat` (corpo) locais com `preload` e `font-display: swap`. |
+| **Tipografia & Identidade** | Carregamento externo lento do Google Fonts com múltiplos pesos redundantes. | *Flash of Unstyled Text (FOUT)* e requisições DNS extras. | **Fontes Oficiais Self-Hosted (WOFF2)**: `Plus Jakarta Sans` (títulos e marca) + `Montserrat` (corpo) locais com `preload` e `font-display: swap`. |
 | **SEO: Hierarquia H1/H2** | H1 genérico voltado apenas a comissão/formandos 2026. H2s sem palavras-chave (*"você ganha e todo mundo ganha!"*). | Não ranqueia para buscas essenciais de médicos (*"como abrir PJ médica"*, *"tributação plantão"*). | **Arquitetura Semântica Completa**: H1 estratégico de carreira + H2s/H3s direcionados à intenção de busca médica + cluster interno de 6 temas. |
 | **SEO: Dados Estruturados** | Schema básico de organização WordPress. | Não aproveita *Rich Snippets* nos resultados do Google. | **Schema.org (`FAQPage`, `Organization`, `MedicalBusiness`, `AccountingService`)** via JSON-LD validado. |
 | **Diagramação & Animações** | Grid estático e pesado do Elementor com espaçamentos desiguais no mobile. | Visual engessado, quebras de linha em telas menores e formulário no final da página. | **Layout Assimétrico & Scroll-Reveal 60fps**: Seções alternadas esquerda/direita, cards escalonados, contadores animados e formulário em destaque no Hero. |
@@ -34,5 +34,5 @@
 - `index.html`: Marcação HTML5 semântica, meta tags SEO/Open Graph/Twitter, JSON-LD e sprite SVG.
 - `css/style.css`: Design System com variáveis CSS, grids assimétricos, responsividade (`1080px`, `960px`, `720px`, `400px`) e transições suaves.
 - `js/main.js`: Controle de header no scroll, barra de progresso, paralaxe sutil, contadores numéricos, acordeão do FAQ e máscara/validação do formulário.
-- `assets/`: Fontes variáveis WOFF2 (`dosis-latin.woff2`, `montserrat-latin.woff2`) e favicons/símbolo oficial.
+- `assets/`: Fontes variáveis WOFF2 (`plus-jakarta-sans-latin.woff2`, `montserrat-latin.woff2`) e favicons/símbolo oficial.
 - `.nojekyll`: Garante entrega direta dos ativos estáticos no GitHub Pages sem processamento desnecessário.

@@ -6,7 +6,6 @@
     mensagemPadrao: "Olá! Quero conhecer a Liga ForDoctor e entender mais sobre PJ médica e início da carreira."
   };
 
-  var reduzMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var temObserver = "IntersectionObserver" in window;
 
   function porId(id) {
@@ -56,7 +55,7 @@
 
     checarTemaCabecalho(y);
 
-    if (!reduzMovimento && y < heroAltura) {
+    if (y < heroAltura) {
       decor.style.transform = "translate3d(0," + Math.round(y * 0.14) + "px,0)";
     }
     aguardandoFrame = false;
@@ -138,7 +137,7 @@
       var topoAtual = window.pageYOffset;
       var distancia = topoDestino - topoAtual;
 
-      if (reduzMovimento || Math.abs(distancia) < 4) {
+      if (Math.abs(distancia) < 4) {
         window.scrollTo(0, topoDestino);
         if (history.pushState) history.pushState(null, "", href);
         return;
@@ -179,10 +178,6 @@
 
   function animarContador(el) {
     var alvo = Number(el.dataset.valor);
-    if (reduzMovimento) {
-      escreverValor(el, alvo);
-      return;
-    }
     var duracao = 1600;
     var inicio = null;
 
@@ -198,7 +193,7 @@
 
   var contadores = document.querySelectorAll(".contador");
 
-  if (temObserver && !reduzMovimento) {
+  if (temObserver) {
     contadores.forEach(function (el) {
       escreverValor(el, 0);
     });
@@ -218,7 +213,7 @@
   /* animações de entrada ao rolar */
   var animados = document.querySelectorAll("[data-revela]");
 
-  if (temObserver && !reduzMovimento) {
+  if (temObserver) {
     var observadorEntrada = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
         if (!entrada.isIntersecting) return;
@@ -384,7 +379,7 @@
     linkRetorno.href = gerarUrlWhatsapp(mensagem);
     retorno.classList.add("visivel");
     formulario.reset();
-    retorno.scrollIntoView({ behavior: reduzMovimento ? "auto" : "smooth", block: "nearest" });
+    retorno.scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
 
   /* chamadas para o formulário: foco sem interromper a rolagem suave */

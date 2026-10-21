@@ -1806,37 +1806,6 @@ footer {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0s !important;
-  }
-
-  .js :where([data-revela]),
-  .js :where(.cartao[data-revela]) > :where(.ico, .etiqueta, h3, p),
-  .js :where(.meta[data-revela]) > *,
-  .js :where(.bonus__item[data-revela]) > *,
-  .js :where(.passo[data-revela]) > *,
-  .js .hero [data-entrada] {
-    opacity: 1;
-    transform: none;
-  }
-
-  .faixa__trilho {
-    width: auto;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .faixa__grupo[aria-hidden="true"] {
-    display: none;
-  }
-}
-
 .nb {
   white-space: nowrap;
 }

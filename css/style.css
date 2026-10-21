@@ -50,10 +50,14 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 92px;
+  scroll-padding-top: 86px;
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
+}
+
+section[id],
+aside[id] {
+  scroll-margin-top: 86px;
 }
 
 body {
@@ -1520,48 +1524,72 @@ footer {
 }
 
 /* animações de entrada por scroll */
-.js [data-anim] {
+.js :where([data-revela]) {
   opacity: 0;
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s);
+  transform: translate3d(0, 36px, 0) scale(0.965);
+  transition:
+    opacity 0.78s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s),
+    transform 0.78s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s);
   will-change: opacity, transform;
 }
 
-.js [data-anim="up"] {
-  transform: translate3d(0, 48px, 0);
-}
-
-.js [data-anim="left"] {
-  transform: translate3d(-46px, 0, 0);
-}
-
-.js [data-anim="right"] {
-  transform: translate3d(46px, 0, 0);
-}
-
-.js [data-anim="zoom"] {
-  transform: scale(0.92) translate3d(0, 24px, 0);
-}
-
-.js [data-anim].visivel {
+.js :where([data-revela].visivel) {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0) scale(1);
   will-change: auto;
+}
+
+.js :where(.cartao[data-revela]:not(.pronto)) > :where(.ico, .etiqueta, h3, p),
+.js :where(.meta[data-revela]:not(.pronto)) > *,
+.js :where(.bonus__item[data-revela]:not(.pronto)) > *,
+.js :where(.passo[data-revela]:not(.pronto)) > * {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js :where(.cartao[data-revela].visivel:not(.pronto)) > :where(.ico, .etiqueta),
+.js :where(.meta[data-revela].visivel:not(.pronto)) > :nth-child(1),
+.js :where(.bonus__item[data-revela].visivel:not(.pronto)) > :nth-child(1),
+.js :where(.passo[data-revela].visivel:not(.pronto)) > :nth-child(1) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(var(--d, 0s) + 0.06s);
+}
+
+.js :where(.cartao[data-revela].visivel:not(.pronto)) > h3,
+.js :where(.meta[data-revela].visivel:not(.pronto)) > :nth-child(2),
+.js :where(.bonus__item[data-revela].visivel:not(.pronto)) > :nth-child(2),
+.js :where(.passo[data-revela].visivel:not(.pronto)) > :nth-child(2) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(var(--d, 0s) + 0.14s);
+}
+
+.js :where(.cartao[data-revela].visivel:not(.pronto)) > p,
+.js :where(.meta[data-revela].visivel:not(.pronto)) > :nth-child(3),
+.js :where(.passo[data-revela].visivel:not(.pronto)) > :nth-child(3) {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(var(--d, 0s) + 0.22s);
 }
 
 /* entrada do hero ao carregar */
 .js .hero [data-entrada] {
   opacity: 0;
-  animation: surgir 1s var(--ease) var(--d, 0s) forwards;
+  animation: surgir 0.95s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) forwards;
 }
 
 @keyframes surgir {
   from {
     opacity: 0;
-    transform: translate3d(0, 28px, 0);
+    transform: translate3d(0, 32px, 0) scale(0.97);
   }
   to {
     opacity: 1;
-    transform: none;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -1742,12 +1770,8 @@ footer {
     translate: none;
   }
 
-  .js [data-anim="left"] {
-    transform: translate3d(-28px, 0, 0);
-  }
-
-  .js [data-anim="right"] {
-    transform: translate3d(28px, 0, 0);
+  .js :where([data-revela]) {
+    transform: translate3d(0, 26px, 0) scale(0.975);
   }
 
   .faq-gatilho {
@@ -1783,10 +1807,6 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   *,
   *::before,
   *::after {
@@ -1796,7 +1816,11 @@ footer {
     transition-delay: 0s !important;
   }
 
-  .js [data-anim],
+  .js :where([data-revela]),
+  .js :where(.cartao[data-revela]) > :where(.ico, .etiqueta, h3, p),
+  .js :where(.meta[data-revela]) > *,
+  .js :where(.bonus__item[data-revela]) > *,
+  .js :where(.passo[data-revela]) > *,
   .js .hero [data-entrada] {
     opacity: 1;
     transform: none;

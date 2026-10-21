@@ -110,33 +110,55 @@
   });
 
   /* rolagem suave personalizada com desconto da barra superior */
+  var idRolagem = 0;
+
+  function cancelarRolagem() {
+    if (idRolagem) {
+      window.cancelAnimationFrame(idRolagem);
+      idRolagem = 0;
+    }
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener("click", function (evento) {
       var href = link.getAttribute("href");
-      if (href === "#" || href === "") return;
+      if (!href || href === "#") return;
       var destino = document.querySelector(href);
       if (!destino) return;
 
       evento.preventDefault();
+      cancelarRolagem();
+
       if (menu.classList.contains("aberto")) {
         definirMenu(false);
       }
 
       var alturaCabecalho = 72;
-      var topoDestino = Math.max(0, destino.getBoundingClientRect().top + window.pageYOffset - alturaCabecalho);
+      var topoDestino = Math.max(0, Math.round(destino.getBoundingClientRect().top + window.pageYOffset - alturaCabecalho));
       var topoAtual = window.pageYOffset;
       var distancia = topoDestino - topoAtual;
-      var duracao = 450;
+
+      if (reduzMovimento || Math.abs(distancia) < 4) {
+        window.scrollTo(0, topoDestino);
+        if (history.pushState) history.pushState(null, "", href);
+        return;
+      }
+
+      var duracao = 520;
       var inicio = null;
+
+      window.addEventListener("wheel", cancelarRolagem, { passive: true, once: true });
+      window.addEventListener("touchstart", cancelarRolagem, { passive: true, once: true });
 
       function animarRolagem(agora) {
         if (inicio === null) inicio = agora;
         var t = Math.min((agora - inicio) / duracao, 1);
-        var ease = 1 - Math.pow(1 - t, 3);
-        window.scrollTo(0, topoAtual + distancia * ease);
+        var ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        window.scrollTo(0, Math.round(topoAtual + distancia * ease));
         if (t < 1) {
-          window.requestAnimationFrame(animarRolagem);
+          idRolagem = window.requestAnimationFrame(animarRolagem);
         } else {
+          idRolagem = 0;
           window.scrollTo(0, topoDestino);
           if (history.pushState) {
             history.pushState(null, "", href);
@@ -144,11 +166,7 @@
         }
       }
 
-      if (reduzMovimento) {
-        window.scrollTo(0, topoDestino);
-      } else {
-        window.requestAnimationFrame(animarRolagem);
-      }
+      idRolagem = window.requestAnimationFrame(animarRolagem);
     });
   });
 
@@ -198,24 +216,29 @@
   }
 
   /* animações de entrada ao rolar */
-  var animados = document.querySelectorAll("[data-anim]");
+  var animados = document.querySelectorAll("[data-revela]");
 
   if (temObserver && !reduzMovimento) {
     var observadorEntrada = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
         if (!entrada.isIntersecting) return;
         var el = entrada.target;
+        var atraso = parseFloat(el.style.getPropertyValue("--d")) || 0;
         el.classList.add("visivel");
         observadorEntrada.unobserve(el);
+        window.setTimeout(function () {
+          el.classList.add("pronto");
+          el.style.removeProperty("--d");
+        }, (atraso + 0.9) * 1000);
       });
-    }, { threshold: 0.15, rootMargin: "0px 0px -12% 0px" });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
 
     animados.forEach(function (el) {
       observadorEntrada.observe(el);
     });
   } else {
     animados.forEach(function (el) {
-      el.classList.add("visivel");
+      el.classList.add("visivel", "pronto");
     });
   }
 

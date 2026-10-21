@@ -1,11 +1,11 @@
 /* liga fordoctor: folha de estilos da landing page */
 
 @font-face {
-  font-family: "Dosis";
+  font-family: "Plus Jakarta Sans";
   font-style: normal;
-  font-weight: 400 800;
+  font-weight: 300 800;
   font-display: swap;
-  src: url("../assets/fonts/dosis-latin.woff2") format("woff2");
+  src: url("../assets/fonts/plus-jakarta-sans-latin.woff2") format("woff2");
 }
 
 @font-face {
@@ -33,7 +33,7 @@
   --ok: #128048;
   --danger: #c92a2a;
 
-  --font-titulo: "Dosis", "Trebuchet MS", system-ui, sans-serif;
+  --font-titulo: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   --font-texto: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
   --gutter: clamp(20px, 5vw, 56px);
@@ -82,11 +82,11 @@ h1,
 h2,
 h3 {
   font-family: var(--font-titulo);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--navy);
   margin: 0;
-  line-height: 1.08;
-  letter-spacing: -0.01em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -234,18 +234,31 @@ p {
   display: flex;
   align-items: center;
   color: var(--hd-fg);
-  transition: background 0.4s ease, height 0.4s var(--ease), box-shadow 0.4s ease, color 0.3s ease;
+  background: transparent;
+  transition: background 0.4s ease, height 0.4s var(--ease), box-shadow 0.4s ease, color 0.3s ease, -webkit-backdrop-filter 0.4s ease, backdrop-filter 0.4s ease;
 }
 
 .topbar.scrolled,
 .topbar.menu-aberto {
-  --hd-fg: var(--navy);
-  --hd-marca: var(--gold-deep);
-  height: 70px;
-  background: rgba(255, 255, 255, 0.92);
+  height: 72px;
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
-  box-shadow: 0 1px 0 var(--line), 0 12px 30px rgba(16, 35, 63, 0.06);
+}
+
+.topbar.scrolled.tema-escuro,
+.topbar.menu-aberto.tema-escuro {
+  --hd-fg: #fff;
+  --hd-marca: var(--gold-bright);
+  background: rgba(11, 26, 46, 0.78);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 34px rgba(3, 12, 26, 0.35);
+}
+
+.topbar.scrolled.tema-claro,
+.topbar.menu-aberto.tema-claro {
+  --hd-fg: var(--navy);
+  --hd-marca: #c49733;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 0 var(--line), 0 14px 34px rgba(16, 35, 63, 0.08);
 }
 
 .topbar__inner {
@@ -258,17 +271,42 @@ p {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-titulo);
-  font-size: 1.95rem;
-  font-weight: 800;
+  font-size: 1.65rem;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--hd-fg);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, transform 0.25s ease;
 }
 
-.logo span {
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo__icone {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  transition: transform 0.3s var(--ease);
+}
+
+.logo:hover .logo__icone {
+  transform: scale(1.06) rotate(-4deg);
+}
+
+.logo__texto {
+  display: inline-flex;
+}
+
+.logo__texto span {
+  font-weight: 700;
   color: var(--hd-marca);
   transition: color 0.3s ease;
 }
@@ -304,8 +342,12 @@ p {
   transition: transform 0.35s var(--ease);
 }
 
-.topbar.scrolled .menu a::after {
-  background: var(--gold);
+.topbar.scrolled.tema-escuro .menu a::after {
+  background: var(--gold-bright);
+}
+
+.topbar.scrolled.tema-claro .menu a::after {
+  background: #c49733;
 }
 
 .menu a:hover,
@@ -1480,24 +1522,24 @@ footer {
 /* animações de entrada por scroll */
 .js [data-anim] {
   opacity: 0;
-  transition: opacity 0.9s var(--ease) var(--d, 0s), transform 0.9s var(--ease) var(--d, 0s);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s);
   will-change: opacity, transform;
 }
 
 .js [data-anim="up"] {
-  transform: translate3d(0, 36px, 0);
+  transform: translate3d(0, 48px, 0);
 }
 
 .js [data-anim="left"] {
-  transform: translate3d(-56px, 0, 0);
+  transform: translate3d(-46px, 0, 0);
 }
 
 .js [data-anim="right"] {
-  transform: translate3d(56px, 0, 0);
+  transform: translate3d(46px, 0, 0);
 }
 
 .js [data-anim="zoom"] {
-  transform: scale(0.92);
+  transform: scale(0.92) translate3d(0, 24px, 0);
 }
 
 .js [data-anim].visivel {

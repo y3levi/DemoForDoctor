@@ -23,12 +23,29 @@
   linkFlutuante.href = gerarUrlWhatsapp(configLiga.mensagemPadrao);
   linkRetorno.href = gerarUrlWhatsapp(configLiga.mensagemPadrao);
 
-  /* cabeçalho: estado ao rolar, barra de progresso e paralaxe do hero */
+  /* cabeçalho: estado ao rolar, tema adaptativo e barra de progresso */
   var topbar = porId("topo");
   var progresso = porId("progresso");
   var decor = porId("hero-decor");
   var heroAltura = porId("inicio").offsetHeight;
+  var secoesEscuras = document.querySelectorAll(".hero, .escuro, .cta-final, footer");
   var aguardandoFrame = false;
+
+  function checarTemaCabecalho(y) {
+    var pontoChecagem = y + 42;
+    var estaNoEscuro = false;
+    for (var i = 0; i < secoesEscuras.length; i++) {
+      var s = secoesEscuras[i];
+      var topoSecao = s.offsetTop;
+      var fundoSecao = topoSecao + s.offsetHeight;
+      if (pontoChecagem >= topoSecao && pontoChecagem <= fundoSecao) {
+        estaNoEscuro = true;
+        break;
+      }
+    }
+    topbar.classList.toggle("tema-escuro", estaNoEscuro);
+    topbar.classList.toggle("tema-claro", !estaNoEscuro);
+  }
 
   function atualizarRolagem() {
     var y = window.pageYOffset;
@@ -36,6 +53,8 @@
 
     topbar.classList.toggle("scrolled", y > 24);
     progresso.style.transform = "scaleX(" + (total > 0 ? Math.min(y / total, 1) : 0) + ")";
+
+    checarTemaCabecalho(y);
 
     if (!reduzMovimento && y < heroAltura) {
       decor.style.transform = "translate3d(0," + Math.round(y * 0.14) + "px,0)";
@@ -90,6 +109,49 @@
     }
   });
 
+  /* rolagem suave personalizada com desconto da barra superior */
+  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    link.addEventListener("click", function (evento) {
+      var href = link.getAttribute("href");
+      if (href === "#" || href === "") return;
+      var destino = document.querySelector(href);
+      if (!destino) return;
+
+      evento.preventDefault();
+      if (menu.classList.contains("aberto")) {
+        definirMenu(false);
+      }
+
+      var alturaCabecalho = 72;
+      var topoDestino = Math.max(0, destino.getBoundingClientRect().top + window.pageYOffset - alturaCabecalho);
+      var topoAtual = window.pageYOffset;
+      var distancia = topoDestino - topoAtual;
+      var duracao = 450;
+      var inicio = null;
+
+      function animarRolagem(agora) {
+        if (inicio === null) inicio = agora;
+        var t = Math.min((agora - inicio) / duracao, 1);
+        var ease = 1 - Math.pow(1 - t, 3);
+        window.scrollTo(0, topoAtual + distancia * ease);
+        if (t < 1) {
+          window.requestAnimationFrame(animarRolagem);
+        } else {
+          window.scrollTo(0, topoDestino);
+          if (history.pushState) {
+            history.pushState(null, "", href);
+          }
+        }
+      }
+
+      if (reduzMovimento) {
+        window.scrollTo(0, topoDestino);
+      } else {
+        window.requestAnimationFrame(animarRolagem);
+      }
+    });
+  });
+
   /* contadores animados */
   var formatador = new Intl.NumberFormat("pt-BR");
 
@@ -138,11 +200,6 @@
   /* animações de entrada ao rolar */
   var animados = document.querySelectorAll("[data-anim]");
 
-  function liberarElemento(el) {
-    el.removeAttribute("data-anim");
-    el.style.removeProperty("--d");
-  }
-
   if (temObserver && !reduzMovimento) {
     var observadorEntrada = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (entrada) {
@@ -150,12 +207,8 @@
         var el = entrada.target;
         el.classList.add("visivel");
         observadorEntrada.unobserve(el);
-        var atraso = parseFloat(getComputedStyle(el).getPropertyValue("--d")) || 0;
-        window.setTimeout(function () {
-          liberarElemento(el);
-        }, (atraso + 1) * 1000 + 200);
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    }, { threshold: 0.15, rootMargin: "0px 0px -12% 0px" });
 
     animados.forEach(function (el) {
       observadorEntrada.observe(el);
@@ -316,7 +369,7 @@
     chamada.addEventListener("click", function () {
       window.setTimeout(function () {
         porId("nome").focus({ preventScroll: true });
-      }, 600);
+      }, 500);
     });
   });
 })();
